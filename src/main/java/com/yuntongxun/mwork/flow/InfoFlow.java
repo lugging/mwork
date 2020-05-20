@@ -1,5 +1,6 @@
 package com.yuntongxun.mwork.flow;
 
+import com.yuntongxun.mwork.constant.CodeConstants;
 import com.yuntongxun.mwork.constant.FlowServiceConstants;
 import com.yuntongxun.mwork.flow.support.AbstractFlow;
 import com.yuntongxun.mwork.flow.support.annotation.FLOW;
@@ -34,8 +35,11 @@ public class InfoFlow extends AbstractFlow<InfoRsp, InfoReq> {
     }
 
     @Override
-    public void validation(InfoReq req) {
+    public void validationHandler(InfoReq req) {
         log.info("入参效验: REQ : {}", req);
+        if ( req.getId() == 999 ){
+            throw new BusinessException(CodeConstants.CODE_601);
+        }
     }
 
     /**

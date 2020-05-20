@@ -32,7 +32,7 @@ public class LoginFlow extends AbstractFlow<LoginRsp, LoginReq> {
      * @param req
      */
     @Override
-    public void validation(LoginReq req) {
+    public void validationHandler(LoginReq req) {
         if ( req.getType() == 1 ){
             if (ObjectUtils.isEmpty(req.getName())) {
                 throw new ValidationException("name 不能为空");

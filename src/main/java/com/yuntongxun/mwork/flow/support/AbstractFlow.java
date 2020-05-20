@@ -5,7 +5,15 @@ import com.yuntongxun.mwork.vo.support.IReq;
 import com.yuntongxun.mwork.vo.support.IRsp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+
+import java.util.Set;
 
 import static com.yuntongxun.mwork.util.JsonUtils.gsonObjectToJson;
 /**
@@ -18,19 +26,24 @@ public abstract class AbstractFlow<RSP extends IRsp, REQ extends IReq> implement
 
     protected Logger log = LoggerFactory.getLogger(getClass());
 
-    /**
-     * 前置处理
-     * @param req
-     */
-    @Override
-    public void preHandler(REQ req) { }
+    @Autowired
+    private Validator validator;
 
     /**
-     * 数据效验
+     * 前置 效验
      * @param req
      */
     @Override
-    public void validation(REQ req) { }
+    public void validation(REQ req){
+        Set<ConstraintViolation<REQ>> set = validator.validate(req);
+        if ( !ObjectUtils.isEmpty(set)){
+            throw new ConstraintViolationException(set);
+        }
+        validationHandler(req);
+    }
+
+    @Override
+    public void validationHandler(REQ req){}
 
     /**
      * 业务执行
@@ -56,22 +69,6 @@ public abstract class AbstractFlow<RSP extends IRsp, REQ extends IReq> implement
         long end = System.currentTimeMillis();
         log.info("flow cost {}ms ", end - begin);
         return rsp;
-    }
-
-    /**
-     * 后置处理
-     * @param rsp
-     * @param req
-     */
-    @Override
-    public void afterHandler(RSP rsp, REQ req) { }
-
-    /**
-     * 异常处理
-     */
-    @Override
-    public void exceptionHandler(BaseException e, REQ req) {
-        throw e;
     }
 
     /**

@@ -3,6 +3,8 @@ package com.yuntongxun.mwork.vo.req;
 import com.yuntongxun.mwork.vo.support.BaseReq;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * @program: mwork
  * @description: login
@@ -20,5 +22,6 @@ public class LoginReq extends BaseReq {
 
     private String name;
 
+    @NotEmpty(message = "req.login.password")
     private String password;
 }

@@ -201,3 +201,50 @@ preHandler -> validation -> process -> afterHandler
 
 ### 流控处理
 [sentinel](https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel)
+
+
+### Hibernate validation 国际化
+[hibernate validation](https://www.yuque.com/.zhibi/springboot/mqu15q)
+
+````
+   /**
+     * 自定义国际化拦截器 其中lang表示切换语言的参数名
+     * LocaleChangeInterceptor 指定切换国际化语言的参数名。
+     * 例如http://www.xxx.cn?lang=zh_CN 表示读取国际化文件messages_zh_CN.properties
+     */
+    @Bean
+    public WebMvcConfigurer localeInterceptor() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
+                localeInterceptor.setParamName("lang");
+                registry.addInterceptor(localeInterceptor);
+            }
+        };
+    }
+
+    /**
+     * SpringBoot 这种方式不生效
+     */
+    @Bean
+    public Validator validator(){
+        ValidatorFactory validatorFactory = Validation.byProvider( HibernateValidator.class )
+                 .configure()
+                 .failFast(true)
+                 .messageInterpolator(new ResourceBundleMessageInterpolator(new MessageSourceResourceBundleLocator(messageSource)))
+                 .buildValidatorFactory();
+         Validator validator = validatorFactory.getValidator();
+        return validator;
+    }
+````
+
+### Spring Interceptor 执行方法
+> org.springframework.web.servlet.HandlerExecutionChain.applyPreHandle
+
+### RequestContextHolder
+持有上下文的Request容器.
+
+### LocaleContextHolder
+本地化、国际化的上下文容器
+

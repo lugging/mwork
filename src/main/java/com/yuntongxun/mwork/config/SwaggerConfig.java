@@ -27,10 +27,14 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class SwaggerConfig {
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     private String version;
+
+    @Autowired
+    public SwaggerConfig(Environment env) {
+        this.env = env;
+    }
 
     /**
      * 初始化获取当前版本version

@@ -1,14 +1,26 @@
 package com.yuntongxun.mwork.handler;
 
+import com.google.common.base.Joiner;
+import com.yuntongxun.mwork.constant.CodeConstants;
 import com.yuntongxun.mwork.flow.support.exception.BusinessException;
 import com.yuntongxun.mwork.vo.support.Result;
 import com.yuntongxun.mwork.vo.support.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @program: mwork
@@ -20,6 +32,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class WebExceptionHandler {
 
+    @Value(value = "${validation.message:true}")
+    private boolean message;
+
+    /**
+     * 引入国际化处理类
+     */
+    private MessageSourceHandler messageSourceHandler;
+
+    @Autowired
+    public WebExceptionHandler(MessageSourceHandler messageSourceHandler) {
+        this.messageSourceHandler = messageSourceHandler;
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
@@ -27,15 +52,45 @@ public class WebExceptionHandler {
         return ResultUtil.error(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result handler(final MethodArgumentNotValidException e) {
+        String msg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
+        if (message){
+            return ResultUtil.error(CodeConstants.CODE_400, msg);
+        } else {
+            return ResultUtil.error(CodeConstants.CODE_400, messageSourceHandler.getMessage(String.valueOf(CodeConstants.CODE_400)));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(ValidationException.class)
+    public Result handlerValidationException(ValidationException e){
+        log.warn("ValidationException message:{}", e.getMessage());
+        String msg = "bad request, ";
+        if(e instanceof ConstraintViolationException){
+            ConstraintViolationException exs = (ConstraintViolationException) e;
+            Set<ConstraintViolation<?>> violations = exs.getConstraintViolations();
+            msg = Joiner.on(",").join(violations.stream().map(constraintViolation -> constraintViolation.getMessage()).collect(Collectors.toList()));
+        }
+        if (message){
+            return ResultUtil.error(CodeConstants.CODE_400, msg);
+        } else {
+            return ResultUtil.error(CodeConstants.CODE_400, messageSourceHandler.getMessage(String.valueOf(CodeConstants.CODE_400)));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(BusinessException.class)
     public Result handlerBusinessException(BusinessException e){
         log.warn("BusinessException code:{}", e.getCode());
-        return ResultUtil.error(e.getCode());
+        return ResultUtil.error(e.getCode(), messageSourceHandler.getMessage(String.valueOf(e.getCode())));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(Exception.class)
     public Result exception(Exception e){
         log.error("Exception {} {}", e.getMessage(), e);
-        return ResultUtil.error(500, e.getMessage());
+        return ResultUtil.error(CodeConstants.CODE_500, messageSourceHandler.getMessage(String.valueOf(CodeConstants.CODE_500)));
     }
 }

@@ -3,6 +3,8 @@ package com.yuntongxun.mwork.vo.req;
 import com.yuntongxun.mwork.vo.support.BaseReq;
 import lombok.Data;
 
+import javax.validation.constraints.*;
+
 /**
  * @program: mwork
  * @description:
@@ -12,5 +14,6 @@ import lombok.Data;
 @Data
 public class InfoReq extends BaseReq {
 
+    @NotNull(message = "{req.info.id.notnull}")
     private Integer id;
 }

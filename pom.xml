@@ -24,6 +24,7 @@
 		<dropwizard-metrics.version>4.1.7</dropwizard-metrics.version>
 		<org-mapstruct_version>1.2.0.Final</org-mapstruct_version>
 		<springfox-swagger.version>2.9.2</springfox-swagger.version>
+		<cometd.version>5.0.0</cometd.version>
 	</properties>
 
 	<dependencies>

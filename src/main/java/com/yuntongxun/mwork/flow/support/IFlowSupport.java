@@ -15,7 +15,7 @@ public interface IFlowSupport<RSP, REQ> extends IFlow<RSP, REQ> {
      * 前置处理
      * @param req
      */
-    void preHandler(REQ req);
+    default void preHandler(REQ req){ }
 
     /**
      * 前置 效验
@@ -24,16 +24,24 @@ public interface IFlowSupport<RSP, REQ> extends IFlow<RSP, REQ> {
     void validation(REQ req);
 
     /**
+     * 参数效验执行类
+     * @param req
+     */
+    void validationHandler(REQ req);
+
+    /**
      * 后置处理
      * @param rsp
      * @param req
      */
-    void afterHandler(RSP rsp, REQ req);
+    default void afterHandler(RSP rsp, REQ req){}
 
     /**
      * 异常处理
      * @param e
      * @param req
      */
-    void exceptionHandler(BaseException e, REQ req);
+    default void exceptionHandler(BaseException e, REQ req){
+        throw e;
+    }
 }
