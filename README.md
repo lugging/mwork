@@ -1,3 +1,9 @@
+SpringBoot, SpringMVC, MybatisPlus, sentinel, mapstruct , p6spy, flyway, swagger-ui, 
+
+* 国际化支持
+* C F S R 结构
+
+
 ### flywaydb 数据库版本维护工具
 
 [官方文档](https://flywaydb.org/documentation)
@@ -186,13 +192,13 @@ Spring 中主要通过 HandlerInterceptor 接口来实现请求的拦截，实�
 controller -> flow -> service -> dao
 
 > controller 
-接收http请求 不做业务逻辑处理
+* 接收http请求 不做业务逻辑处理
 > flow 
-业务流程逻辑处理
+* 业务流程逻辑处理
 > service
-原子服务处理
+* 原子服务处理
 >dao
-数据库访问层，不做业务逻辑处理，可使用本地缓存或者分布式缓存
+* 数据库访问层，不做业务逻辑处理，可使用本地缓存或者分布式缓存
 
 ### FLOW 执行顺序 继承子AbstractFlow
 preHandler -> validation -> process -> afterHandler
