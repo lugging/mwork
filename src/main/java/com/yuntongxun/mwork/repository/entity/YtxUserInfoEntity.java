@@ -62,4 +62,8 @@ public class YtxUserInfoEntity extends BaseEntity {
     public static final String PHONE_NUM = "phone_num";
 
     public static final String USER_STATUS = "user_status";
+
+    public static final String USER_ID = "user_id";
+
+    public static final String UPDATE_TIME = "update_time";
 }

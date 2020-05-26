@@ -254,3 +254,28 @@ preHandler -> validation -> process -> afterHandler
 ### LocaleContextHolder
 本地化、国际化的上下文容器
 
+### 对请求入参 加密处理
+com.yuntongxun.mwork.filter.AuthFilter
+
+
+####两个概念和三个术语
+
+区分两个概念：Authentication（认证） 和 Authorization （授权），前者是证明请求者是身份，就像身份证一样，后者是为了获得权限。身份是区别于别人的证明，而权限是证明自己的特权。Authentication为了证明操作的这个人就是他本人，需要提供密码、短信验证码，甚至人脸识别。Authorization 则是不需要在所有的请求都需要验人，是在经过Authorization后得到一个Token，这就是Authorization。就像护照和签证一样。
+区分三个概念：编码Base64Encode、签名HMAC、加密RSA。编码是为了更的传输，等同于明文，签名是为了信息不能被篡改，加密是为了不让别人看到是什么信息。
+明白一些初衷
+
+使用复杂地HMAC哈希签名方式主要是应对当年没有TLS/SSL加密链路的情况。
+JWT把 uid 放在 Token中目的是为了去掉状态，但不能让用户修改，所以需要签名。
+OAuth 1.0区分了两个事，一个是第三方的Client，一个是真正的用户，其先拿Request Token，再换Access Token的方法主要是为了把第三方应用和用户区分开来。
+用户的Password是用户自己设置的，复杂度不可控，服务端颁发的Serect会很复杂，但主要目的是为了容易管理，可以随时注销掉。
+OAuth 协议有比所有认证协议有更为灵活完善的配置，如果使用AppID/AppSecret签名的方式，又需要做到可以有不同的权限和可以随时注销，那么你得开发一个像AWS的IAM这样的账号和密钥对管理的系统。
+相关的注意事项
+
+无论是哪种方式，我们都应该遵循HTTP的规范，把认证信息放在 AuthorizationHTTP 头中。
+不要使用GET的方式在URL中放入secret之类的东西，因为很多proxy或gateway的软件会把整个URL记在Access Log文件中。
+密钥Secret相当于Password，但他是用来加密的，最好不要在网络上传输，如果要传输，最好使用TLS/SSL的安全链路。
+HMAC中无论是MD5还是SHA1/SHA2，其计算都是非常快的，RSA的非对称加密是比较耗CPU的，尤其是要加密的字符串很长的时候。
+最好不要在程序中hard code 你的 Secret，因为在github上有很多黑客的软件在监视各种Secret，千万小心！这类的东西应该放在你的配置系统或是部署系统中，在程序启动时设置在配置文件或是环境变量中。
+使用AppID/AppSecret，还是使用OAuth1.0a，还是OAuth2.0，还是使用JWT，我个人建议使用TLS/SSL下的OAuth 2.0。
+密钥是需要被管理的，管理就是可以新增可以撤销，可以设置账户和相关的权限。最好密钥是可以被自动更换的。
+认证授权服务器（Authorization Server）和应用服务器（App Server）最好分开。

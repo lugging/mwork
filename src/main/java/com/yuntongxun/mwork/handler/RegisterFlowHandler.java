@@ -1,4 +1,4 @@
-package com.yuntongxun.mwork.runner;
+package com.yuntongxun.mwork.handler;
 
 import com.yuntongxun.mwork.flow.support.IFlow;
 import com.yuntongxun.mwork.flow.support.IFlowDispatch;
@@ -34,6 +34,7 @@ public class RegisterFlowHandler {
         for( Map.Entry<String, IFlow> entry : objectMap.entrySet() ){
             IFlow flow = entry.getValue();
             try {
+                // AOP代理的对象获取不到注解，此处用AopTargetUtils.getTarget方法获取全局对象
                 FLOW flowAnnotation = AopTargetUtils.getTarget(flow).getClass().getAnnotation(FLOW.class);
                 flowDispatch.register(flowAnnotation.flowId(), flow);
             } catch (Exception e) {

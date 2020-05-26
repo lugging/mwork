@@ -1,7 +1,7 @@
 package com.yuntongxun.mwork.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.yuntongxun.mwork.repository.entity.YtxUserInfoEntity;
+import com.yuntongxun.mwork.repository.entity.YtxLoginEntity;
 
 /**
  * <p>
@@ -11,7 +11,7 @@ import com.yuntongxun.mwork.repository.entity.YtxUserInfoEntity;
  * @author liugang
  * @since 2019-12-25
  */
-public interface IYtxUserInfoService extends IService<YtxUserInfoEntity> {
+public interface IYtxLoginService extends IService<YtxLoginEntity> {
 
-    int update(long id);
+    int insert(YtxLoginEntity entity);
 }

@@ -1,5 +1,7 @@
 package com.yuntongxun.mwork.interceptor;
 
+import com.google.common.base.Splitter;
+import com.yuntongxun.mwork.config.MyConfigProperties;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
@@ -18,14 +20,22 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LocaleInterceptor extends LocaleChangeInterceptor {
 
+	private static final String SEPARATOR = ",";
+
+	private MyConfigProperties myConfigProperties;
+
+	public LocaleInterceptor(MyConfigProperties myConfigProperties){
+		this.myConfigProperties = myConfigProperties;
+	}
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException {
-
 		String newLocale = request.getParameter(getParamName());
 		if (StringUtils.isEmpty(newLocale)){
 			newLocale = request.getHeader(getParamName());
 		}
 		if (newLocale != null) {
+			newLocale = skip(newLocale);
 			if (checkHttpMethod(request.getMethod())) {
 				LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
 				if (localeResolver == null) {
@@ -60,6 +70,14 @@ public class LocaleInterceptor extends LocaleChangeInterceptor {
 			}
 		}
 		return false;
+	}
+
+	private String skip(String locale){
+		if ( locale.indexOf(SEPARATOR) > 0 ){
+			return Splitter.on(SEPARATOR).split(locale).iterator().next();
+		} else {
+			return locale;
+		}
 	}
 }
 

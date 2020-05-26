@@ -2,6 +2,7 @@ package com.yuntongxun.mwork.constant;
 
 /**
  * 响应码 常量表
+ * @author liugang
  */
 public interface CodeConstants {
 
@@ -9,7 +10,7 @@ public interface CodeConstants {
      *
      */
     int CODE_400 = 400;
-
+    int CODE_401 = 401;
     /**
      *
      */

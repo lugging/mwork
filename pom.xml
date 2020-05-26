@@ -24,6 +24,7 @@
 		<dropwizard-metrics.version>4.1.7</dropwizard-metrics.version>
 		<org-mapstruct_version>1.2.0.Final</org-mapstruct_version>
 		<springfox-swagger.version>2.9.2</springfox-swagger.version>
+		<hutool_version>5.3.5</hutool_version>
 		<cometd.version>5.0.0</cometd.version>
 	</properties>
 
@@ -43,6 +44,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
@@ -79,6 +85,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-crypto</artifactId>
+			<version>${hutool_version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -89,9 +100,9 @@
 			<version>${springfox-swagger.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${springfox-swagger.version}</version>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-spring-boot-starter</artifactId>
+			<version>2.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -107,6 +118,12 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

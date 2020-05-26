@@ -16,5 +16,8 @@ spring:
       maximum-pool-size: 10
       minimum-idle: 2
       pool-name: mwork-datasource-hikari-poll
-validation:
-  message: true
+mwork:
+  authConfig:
+    enabled: true
+  validation:
+    enabled: true

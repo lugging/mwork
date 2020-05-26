@@ -1,7 +1,9 @@
 package com.yuntongxun.mwork.handler;
 
 import com.google.common.base.Joiner;
+import com.yuntongxun.mwork.config.MyConfigProperties;
 import com.yuntongxun.mwork.constant.CodeConstants;
+import com.yuntongxun.mwork.filter.support.SignatureException;
 import com.yuntongxun.mwork.flow.support.exception.BusinessException;
 import com.yuntongxun.mwork.vo.support.Result;
 import com.yuntongxun.mwork.vo.support.ResultUtil;
@@ -31,9 +33,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class WebExceptionHandler {
-
-    @Value(value = "${validation.message:true}")
-    private boolean message;
+    /**
+     * 自定义配置文件
+     */
+    private final MyConfigProperties configProperties;
 
     /**
      * 引入国际化处理类
@@ -41,8 +44,9 @@ public class WebExceptionHandler {
     private MessageSourceHandler messageSourceHandler;
 
     @Autowired
-    public WebExceptionHandler(MessageSourceHandler messageSourceHandler) {
+    public WebExceptionHandler(MessageSourceHandler messageSourceHandler, MyConfigProperties configProperties) {
         this.messageSourceHandler = messageSourceHandler;
+        this.configProperties = configProperties;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -56,10 +60,20 @@ public class WebExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handler(final MethodArgumentNotValidException e) {
         String msg = e.getBindingResult().getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining());
-        if (message){
+        if (!configProperties.getValidation().isEnabled()){
             return ResultUtil.error(CodeConstants.CODE_400, msg);
         } else {
             return ResultUtil.error(CodeConstants.CODE_400, messageSourceHandler.getMessage(String.valueOf(CodeConstants.CODE_400)));
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(SignatureException.class)
+    public Result handler(final SignatureException e) {
+        if (!configProperties.getValidation().isEnabled()){
+            return ResultUtil.error(CodeConstants.CODE_401, e.getMessage());
+        } else {
+            return ResultUtil.error(CodeConstants.CODE_401, messageSourceHandler.getMessage(String.valueOf(CodeConstants.CODE_401)));
         }
     }
 
@@ -73,7 +87,7 @@ public class WebExceptionHandler {
             Set<ConstraintViolation<?>> violations = exs.getConstraintViolations();
             msg = Joiner.on(",").join(violations.stream().map(constraintViolation -> constraintViolation.getMessage()).collect(Collectors.toList()));
         }
-        if (message){
+        if (!configProperties.getValidation().isEnabled()){
             return ResultUtil.error(CodeConstants.CODE_400, msg);
         } else {
             return ResultUtil.error(CodeConstants.CODE_400, messageSourceHandler.getMessage(String.valueOf(CodeConstants.CODE_400)));
