@@ -20,7 +20,7 @@ public class AbstractDispatchFlow implements IFlowDispatch {
     /**
      * 业务执行流程缓存
      */
-    private static ConcurrentMap<String, IFlow> FLOW_MAP = new ConcurrentHashMap();
+    private static ConcurrentMap<String, IFlow> FLOW_MAP = new ConcurrentHashMap(16);
 
     /**
      * 业务调度方法
@@ -31,13 +31,32 @@ public class AbstractDispatchFlow implements IFlowDispatch {
      */
     @Override
     public <RSP, REQ> RSP dispatch(String flowId, REQ req) {
-        log.info("dispatch flowId {}", flowId);
+        log.info("dispatch flowId [{}]", flowId);
         IFlow flow = FLOW_MAP.get(flowId);
         if ( null == flow ){
             throw new FlowNotFoundException();
         }
         return (RSP) flow.execute(req);
     }
+
+    /**
+     * 未指定flowId 则，默认使用入参对象全类名
+     * @param req
+     * @param <RSP>
+     * @param <REQ>
+     * @return
+     */
+    @Override
+    public <RSP, REQ> RSP dispatch(REQ req) {
+        String flowId = req.getClass().getName();
+        log.info("dispatch flowId [{}]", flowId);
+        IFlow flow = FLOW_MAP.get(flowId);
+        if ( null == flow ){
+            throw new FlowNotFoundException();
+        }
+        return (RSP) flow.execute(req);
+    }
+
 
     /**
      * 注册flow

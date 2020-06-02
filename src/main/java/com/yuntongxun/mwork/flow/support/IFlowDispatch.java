@@ -17,6 +17,15 @@ public interface IFlowDispatch {
    <RSP, REQ> RSP dispatch(String flowId, REQ req);
 
     /**
+     * 调用业务流程, 请求响应模型
+     * @param req
+     * @param <RSP>
+     * @param <REQ>
+     * @return
+     */
+   <RSP, REQ> RSP dispatch(REQ req);
+
+    /**
      * 注册 FLOW
      * @param flowId
      * @param flowHandler

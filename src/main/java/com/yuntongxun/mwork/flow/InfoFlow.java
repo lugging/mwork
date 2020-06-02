@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author: liugang
  * @create: 2020-05-15 10:50
  **/
-@FLOW(flowId = FlowServiceConstants.F0002)
+@FLOW
 public class InfoFlow extends AbstractFlow<InfoRsp, InfoReq> {
 
     private final IYtxUserInfoService infoService;

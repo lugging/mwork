@@ -21,7 +21,7 @@ public @interface FLOW {
      * 流程ID
      * @return
      */
-    String flowId();
+    String flowId() default "";
 
     /**
      * 描述

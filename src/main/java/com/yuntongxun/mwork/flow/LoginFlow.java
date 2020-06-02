@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.yuntongxun.mwork.constant.FlowServiceConstants;
 import com.yuntongxun.mwork.flow.support.AbstractFlow;
 import com.yuntongxun.mwork.flow.support.annotation.FLOW;
-import com.yuntongxun.mwork.flow.support.exception.ValidationException;
 import com.yuntongxun.mwork.repository.entity.YtxLoginEntity;
 import com.yuntongxun.mwork.repository.entity.YtxUserInfoEntity;
 import com.yuntongxun.mwork.service.IYtxLoginService;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 
 /**

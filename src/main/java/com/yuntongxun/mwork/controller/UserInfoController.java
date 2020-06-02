@@ -29,7 +29,7 @@ public class UserInfoController extends BaseController {
 
     @GetMapping(value = "info")
     public Result<InfoRsp> info(InfoReq req){
-        InfoRsp rsp = dispatch(FlowServiceConstants.F0002, req);
+        InfoRsp rsp = dispatch(req);
         return ResultUtil.ok(rsp);
     }
 }

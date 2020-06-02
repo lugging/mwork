@@ -18,6 +18,6 @@ spring:
       pool-name: mwork-datasource-hikari-poll
 mwork:
   authConfig:
-    enabled: true
+    enabled: false
   validation:
-    enabled: true
+    showMessageEnabled: true

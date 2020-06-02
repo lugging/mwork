@@ -17,6 +17,7 @@ public abstract class BaseController{
     private IFlowDispatch dispatch;
 
     /**
+     * 根据手工配置flowId 调用
      * @param flowId
      * @param req
      * @param <P>
@@ -25,5 +26,16 @@ public abstract class BaseController{
      */
     public <P extends IRsp, R extends IReq> P dispatch(String flowId, R req){
         return dispatch.dispatch(flowId, req);
+    }
+
+    /**
+     * 根据入参类型 调用
+     * @param req
+     * @param <P>
+     * @param <R>
+     * @return
+     */
+    public <P extends IRsp, R extends IReq> P dispatch(R req){
+        return dispatch.dispatch(req);
     }
 }

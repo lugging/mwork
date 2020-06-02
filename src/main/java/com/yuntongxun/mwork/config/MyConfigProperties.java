@@ -45,6 +45,6 @@ public class MyConfigProperties {
         /**
          * 是否启用 完整的消息提示
          */
-        private boolean enabled = false;
+        private boolean showMessageEnabled = false;
     }
 }
